@@ -1,0 +1,114 @@
+{
+  "name": "inventory",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "projectType": "application",
+  "prefix": "inv",
+  "sourceRoot": "apps/inventory/src",
+  "tags": [],
+  "targets": {
+    "build": {
+      "executor": "@angular-architects/native-federation-v4:build",
+      "options": {
+        "cacheExternalArtifacts": true,
+        "tsConfig": "apps/inventory/tsconfig.federation.json"
+      },
+      "configurations": {
+        "production": {
+          "target": "inventory:esbuild:production"
+        },
+        "development": {
+          "target": "inventory:esbuild:development",
+          "dev": true
+        }
+      },
+      "defaultConfiguration": "production"
+    },
+    "serve": {
+      "executor": "@angular-architects/native-federation-v4:build",
+      "options": {
+        "target": "inventory:serve-original:development",
+        "tsConfig": "apps/inventory/tsconfig.federation.json",
+        "rebuildDelay": 500,
+        "cacheExternalArtifacts": true,
+        "dev": true,
+        "devServer": true,
+        "port": 0
+      }
+    },
+    "serve-static": {
+      "continuous": true,
+      "executor": "@nx/web:file-server",
+      "options": {
+        "buildTarget": "inventory:build",
+        "port": 4301,
+        "staticFilePath": "dist/apps/inventory/browser",
+        "spa": true
+      }
+    },
+    "esbuild": {
+      "executor": "@angular/build:application",
+      "outputs": [
+        "{options.outputPath}"
+      ],
+      "defaultConfiguration": "production",
+      "options": {
+        "outputPath": "dist/apps/inventory",
+        "browser": "apps/inventory/src/main.ts",
+        "tsConfig": "apps/inventory/tsconfig.app.json",
+        "assets": [
+          {
+            "glob": "**/*",
+            "input": "apps/inventory/public"
+          }
+        ],
+        "styles": [
+          "apps/inventory/src/styles.css"
+        ],
+        "polyfills": [
+          "es-module-shims"
+        ]
+      },
+      "configurations": {
+        "production": {
+          "budgets": [
+            {
+              "type": "initial",
+              "maximumWarning": "500kb",
+              "maximumError": "1mb"
+            },
+            {
+              "type": "anyComponentStyle",
+              "maximumWarning": "4kb",
+              "maximumError": "8kb"
+            }
+          ],
+          "outputHashing": "all"
+        },
+        "development": {
+          "optimization": false,
+          "extractLicenses": false,
+          "sourceMap": true
+        }
+      }
+    },
+    "serve-original": {
+      "continuous": true,
+      "executor": "@angular/build:dev-server",
+      "defaultConfiguration": "development",
+      "options": {
+        "port": 4301,
+        "headers": {
+          "Access-Control-Allow-Origin": "*"
+        }
+      },
+      "configurations": {
+        "production": {
+          "buildTarget": "inventory:esbuild:production"
+        },
+        "development": {
+          "buildTarget": "inventory:esbuild:development"
+        }
+      }
+    }
+  }
+}

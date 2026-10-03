@@ -1,0 +1,114 @@
+{
+  "name": "ng-shell",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "projectType": "application",
+  "prefix": "ng",
+  "sourceRoot": "apps/ng-shell/src",
+  "tags": [],
+  "targets": {
+    "build": {
+      "executor": "@angular-architects/native-federation-v4:build",
+      "defaultConfiguration": "production",
+      "options": {
+        "cacheExternalArtifacts": true,
+        "tsConfig": "apps/ng-shell/tsconfig.federation.json"
+      },
+      "configurations": {
+        "production": {
+          "target": "ng-shell:esbuild:production"
+        },
+        "development": {
+          "target": "ng-shell:esbuild:development",
+          "dev": true
+        }
+      }
+    },
+    "serve": {
+      "executor": "@angular-architects/native-federation-v4:build",
+      "options": {
+        "target": "ng-shell:serve-original:development",
+        "tsConfig": "apps/ng-shell/tsconfig.federation.json",
+        "rebuildDelay": 500,
+        "cacheExternalArtifacts": true,
+        "dev": true,
+        "devServer": true,
+        "port": 0
+      }
+    },
+    "serve-static": {
+      "continuous": true,
+      "executor": "@nx/web:file-server",
+      "options": {
+        "buildTarget": "ng-shell:build",
+        "port": 4300,
+        "staticFilePath": "dist/apps/ng-shell/browser",
+        "spa": true
+      }
+    },
+    "esbuild": {
+      "executor": "@angular/build:application",
+      "outputs": [
+        "{options.outputPath}"
+      ],
+      "defaultConfiguration": "production",
+      "options": {
+        "outputPath": "dist/apps/ng-shell",
+        "browser": "apps/ng-shell/src/main.ts",
+        "tsConfig": "apps/ng-shell/tsconfig.app.json",
+        "assets": [
+          {
+            "glob": "**/*",
+            "input": "apps/ng-shell/public"
+          }
+        ],
+        "styles": [
+          "apps/ng-shell/src/styles.css"
+        ],
+        "polyfills": [
+          "es-module-shims"
+        ]
+      },
+      "configurations": {
+        "production": {
+          "budgets": [
+            {
+              "type": "initial",
+              "maximumWarning": "500kb",
+              "maximumError": "1mb"
+            },
+            {
+              "type": "anyComponentStyle",
+              "maximumWarning": "4kb",
+              "maximumError": "8kb"
+            }
+          ],
+          "outputHashing": "all"
+        },
+        "development": {
+          "optimization": false,
+          "extractLicenses": false,
+          "sourceMap": true
+        }
+      }
+    },
+    "serve-original": {
+      "continuous": true,
+      "executor": "@angular/build:dev-server",
+      "defaultConfiguration": "development",
+      "options": {
+        "port": 4300,
+        "headers": {
+          "Access-Control-Allow-Origin": "*"
+        }
+      },
+      "configurations": {
+        "production": {
+          "buildTarget": "ng-shell:esbuild:production"
+        },
+        "development": {
+          "buildTarget": "ng-shell:esbuild:development"
+        }
+      }
+    }
+  }
+}

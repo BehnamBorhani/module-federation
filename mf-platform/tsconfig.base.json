@@ -1,0 +1,25 @@
+{
+  "compileOnSave": false,
+  "compilerOptions": {
+    "rootDir": ".",
+    "sourceMap": true,
+    "declaration": false,
+    "moduleResolution": "node10",
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "importHelpers": true,
+    "target": "es2015",
+    "module": "esnext",
+    "lib": ["es2020", "dom"],
+    "skipLibCheck": true,
+    "skipDefaultLibCheck": true,
+    "strict": false,
+    "baseUrl": ".",
+    "paths": {
+      "@mf/contracts": ["packages/shared/contracts/src/index.ts"],
+      "@mf/auth": ["packages/shared/auth/src/index.ts"],
+      "@mf/events": ["packages/shared/events/src/index.ts"]
+    }
+  },
+  "exclude": ["node_modules", "tmp"]
+}
