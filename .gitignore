@@ -4,9 +4,15 @@
 dist
 tmp
 out-tsc
+**/dist
 
 # dependencies
 node_modules
+
+# Module Federation / Vite generated
+**/@mf-types/
+**/.dev-server/
+**/.vite/
 
 # IDEs and editors
 /.idea
@@ -45,3 +51,4 @@ Thumbs.db
 .claude/settings.local.json
 
 .angular
+.cursor/
